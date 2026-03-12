@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: patient-service
+              uri: http://localhost:8080
+              predicates:
+                - Path=/api/patients,/api/patients/**
