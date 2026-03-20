@@ -19,4 +19,8 @@ export class PatientService {
   getPatients(): Observable<Patient[]> {
     return this.http.get<Patient[]>(this.apiUrl, { headers: this.headers });
   }
+
+  getPatientById(id: number): Observable<Patient> {
+    return this.http.get<Patient>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  }
 }
