@@ -40,6 +40,7 @@
       </div>
       
       <div class="actions">
+        <button class="btn" [routerLink]="['/patients/edit', patient()?.id]">Modifier</button>
         <button class="btn" routerLink="/patients">Retour à la liste</button>
       </div>
     </div>

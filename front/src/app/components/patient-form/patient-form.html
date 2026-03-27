@@ -1,0 +1,52 @@
+<div class="container">
+  <h1>{{ isEditMode ? 'Modifier' : 'Ajouter' }} un patient</h1>
+
+  @if (loading) {
+    <p>Chargement en cours...</p>
+  }
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="form-container">
+    <div class="form-group">
+      <label for="prenom">Prénom *</label>
+      <input id="prenom" type="text" formControlName="prenom" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="nom">Nom *</label>
+      <input id="nom" type="text" formControlName="nom" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="dateNaissance">Date de naissance *</label>
+      <input id="dateNaissance" type="date" formControlName="dateNaissance" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="genre">Genre *</label>
+      <select id="genre" formControlName="genre" class="form-control">
+        <option value="" disabled>Sélectionner un genre</option>
+        <option value="M">Homme</option>
+        <option value="F">Femme</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="adressePostale">Adresse Postale</label>
+      <input id="adressePostale" type="text" formControlName="adressePostale" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="telephone">Téléphone</label>
+      <input id="telephone" type="text" formControlName="telephone" class="form-control" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="patientForm.invalid || loading">Sauvegarder</button>
+      <button type="button" class="btn" (click)="onCancel()">Annuler</button>
+    </div>
+  </form>
+</div>

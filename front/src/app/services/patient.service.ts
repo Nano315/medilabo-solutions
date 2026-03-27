@@ -23,4 +23,12 @@ export class PatientService {
   getPatientById(id: number): Observable<Patient> {
     return this.http.get<Patient>(`${this.apiUrl}/${id}`, { headers: this.headers });
   }
+
+  addPatient(patient: Patient): Observable<Patient> {
+    return this.http.post<Patient>(this.apiUrl, patient, { headers: this.headers });
+  }
+
+  updatePatient(id: number, patient: Patient): Observable<Patient> {
+    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient, { headers: this.headers });
+  }
 }

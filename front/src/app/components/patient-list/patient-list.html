@@ -1,5 +1,9 @@
 <div class="container">
   <h1>Liste des patients</h1>
+  
+  <div class="actions">
+    <button class="btn btn-primary" routerLink="/patients/add">Ajouter un nouveau patient</button>
+  </div>
 
   @if (loading()) {
     <p>Chargement en cours...</p>
