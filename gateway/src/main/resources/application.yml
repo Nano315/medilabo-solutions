@@ -21,3 +21,7 @@ spring:
               uri: http://localhost:8080
               predicates:
                 - Path=/api/patients,/api/patients/**
+            - id: note-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/notes/**
