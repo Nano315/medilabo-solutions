@@ -44,5 +44,30 @@
         <button class="btn" routerLink="/patients">Retour à la liste</button>
       </div>
     </div>
+
+    <div class="notes-section">
+      <h2>Historique des notes</h2>
+      
+      <div class="notes-list">
+        @for (note of notes(); track note.id) {
+          <div class="note-card">
+            <p class="note-content">{{ note.note }}</p>
+          </div>
+        } @empty {
+          <p>Aucune note pour ce patient.</p>
+        }
+      </div>
+
+      <div class="add-note-form">
+        <h3>Ajouter une note</h3>
+        <textarea 
+          [ngModel]="newNoteContent()" 
+          (ngModelChange)="newNoteContent.set($event)"
+          rows="4" 
+          placeholder="Saisissez votre note ici..."
+          class="note-textarea"></textarea>
+        <button class="btn" (click)="saveNote()" [disabled]="!newNoteContent().trim()">Ajouter la note</button>
+      </div>
+    </div>
   }
 </div>

@@ -1,13 +1,16 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../models/patient.model';
+import { NoteService } from '../../services/note.service';
+import { Note } from '../../models/note.model';
 
 @Component({
   selector: 'app-patient-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './patient-detail.html',
   styleUrl: './patient-detail.css'
 })
@@ -15,11 +18,14 @@ export class PatientDetailComponent implements OnInit {
   patient = signal<Patient | null>(null);
   loading = signal(true);
   error = signal('');
+  notes = signal<Note[]>([]);
+  newNoteContent = signal('');
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private noteService: NoteService
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +36,7 @@ export class PatientDetailComponent implements OnInit {
         next: (data) => {
           this.patient.set(data);
           this.loading.set(false);
+          this.loadNotes(id);
         },
         error: (err) => {
           console.error('PatientDetailComponent: Error getting patient', err);
@@ -40,6 +47,33 @@ export class PatientDetailComponent implements OnInit {
     } else {
       this.error.set('ID de patient invalide.');
       this.loading.set(false);
+    }
+  }
+
+  loadNotes(patId: number): void {
+    this.noteService.getPatientNotes(patId).subscribe({
+      next: (data) => this.notes.set(data),
+      error: (err) => console.error('PatientDetailComponent: Error getting notes', err)
+    });
+  }
+
+  saveNote(): void {
+    const currentPatient = this.patient();
+    const content = this.newNoteContent().trim();
+    if (currentPatient && currentPatient.id && content) {
+      const newNote: Note = {
+        patId: currentPatient.id,
+        patient: `${currentPatient.prenom} ${currentPatient.nom}`,
+        note: content
+      };
+      
+      this.noteService.addNote(newNote).subscribe({
+        next: () => {
+          this.newNoteContent.set('');
+          this.loadNotes(currentPatient.id!);
+        },
+        error: (err) => console.error('PatientDetailComponent: Error adding note', err)
+      });
     }
   }
 
