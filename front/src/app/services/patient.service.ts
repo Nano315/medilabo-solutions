@@ -31,4 +31,8 @@ export class PatientService {
   updatePatient(id: number, patient: Patient): Observable<Patient> {
     return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient, { headers: this.headers });
   }
+
+  getPatientRisk(patId: number): Observable<any> {
+    return this.http.get<any>(`http://localhost:8081/api/assessment/${patId}`, { headers: this.headers });
+  }
 }

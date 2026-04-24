@@ -37,3 +37,40 @@
   font-family: inherit;
   resize: vertical;
 }
+
+.assessment-section {
+  margin-top: 2rem;
+  border-top: 1px solid #ccc;
+  padding-top: 1rem;
+}
+
+.assessment-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.risk-badge {
+  font-weight: bold;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: white;
+  margin-left: 5px;
+}
+
+.risk-none {
+  background-color: #28a745;
+}
+
+.risk-borderline {
+  background-color: #fd7e14;
+}
+
+.risk-danger {
+  background-color: #dc3545;
+}
+
+.risk-early-onset {
+  background-color: #dc3545;
+}

@@ -6,6 +6,7 @@ import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../models/patient.model';
 import { NoteService } from '../../services/note.service';
 import { Note } from '../../models/note.model';
+import { Assessment } from '../../models/assessment.model';
 
 @Component({
   selector: 'app-patient-detail',
@@ -20,6 +21,7 @@ export class PatientDetailComponent implements OnInit {
   error = signal('');
   notes = signal<Note[]>([]);
   newNoteContent = signal('');
+  assessment = signal<Assessment | null>(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +39,7 @@ export class PatientDetailComponent implements OnInit {
           this.patient.set(data);
           this.loading.set(false);
           this.loadNotes(id);
+          this.loadAssessment(id);
         },
         error: (err) => {
           console.error('PatientDetailComponent: Error getting patient', err);
@@ -55,6 +58,24 @@ export class PatientDetailComponent implements OnInit {
       next: (data) => this.notes.set(data),
       error: (err) => console.error('PatientDetailComponent: Error getting notes', err)
     });
+  }
+
+  loadAssessment(patId: number): void {
+    this.patientService.getPatientRisk(patId).subscribe({
+      next: (data) => this.assessment.set(data),
+      error: (err) => console.error('PatientDetailComponent: Error getting assessment', err)
+    });
+  }
+
+  getRiskClass(risk: string | undefined): string {
+    if (!risk) return '';
+    switch (risk.toUpperCase()) {
+      case 'NONE': return 'risk-none';
+      case 'BORDERLINE': return 'risk-borderline';
+      case 'IN DANGER': return 'risk-danger';
+      case 'EARLY ONSET': return 'risk-early-onset';
+      default: return '';
+    }
   }
 
   saveNote(): void {

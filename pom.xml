@@ -16,6 +16,7 @@
         <module>patient</module>
         <module>gateway</module>
         <module>note</module>
+        <module>assessment</module>
     </modules>
 
 </project>
