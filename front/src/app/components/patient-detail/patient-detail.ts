@@ -6,6 +6,7 @@ import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../models/patient.model';
 import { NoteService } from '../../services/note.service';
 import { Note } from '../../models/note.model';
+import { AssessmentService } from '../../services/assessment.service';
 import { Assessment } from '../../models/assessment.model';
 
 @Component({
@@ -27,7 +28,8 @@ export class PatientDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private patientService: PatientService,
-    private noteService: NoteService
+    private noteService: NoteService,
+    private assessmentService: AssessmentService
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +63,7 @@ export class PatientDetailComponent implements OnInit {
   }
 
   loadAssessment(patId: number): void {
-    this.patientService.getPatientRisk(patId).subscribe({
+    this.assessmentService.getPatientRisk(patId).subscribe({
       next: (data) => this.assessment.set(data),
       error: (err) => console.error('PatientDetailComponent: Error getting assessment', err)
     });
