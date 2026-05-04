@@ -1,0 +1,31 @@
+# Maven
+target/
+*.iml
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE - IntelliJ
+.idea/
+
+# IDE - Eclipse / STS
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+.apt_generated/
+.factorypath
+
+# IDE - VS Code
+.vscode/*.local.json
+.history/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environnement local
+.env
+.env.local
