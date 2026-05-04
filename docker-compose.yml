@@ -1,0 +1,121 @@
+services:
+
+  # ============== BASES DE DONNÉES ==============
+
+  mysql:
+    image: mysql:8.0
+    container_name: medilabo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: patient_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - medilabo-net
+
+  mongodb:
+    image: mongo:7
+    container_name: medilabo-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - medilabo-net
+
+  # ============== MICROSERVICES BACK ==============
+
+  patient:
+    build: ./patient
+    container_name: medilabo-patient
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/patient_db?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - medilabo-net
+
+  note:
+    build: ./note
+    container_name: medilabo-note
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://root:root@mongodb:27017/note_db?authSource=admin
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - medilabo-net
+
+  assessment:
+    build: ./assessment
+    container_name: medilabo-assessment
+    ports:
+      - "8083:8083"
+    environment:
+      PATIENT_SERVICE_URL: http://patient:8080
+      NOTE_SERVICE_URL: http://note:8082
+    depends_on:
+      - patient
+      - note
+    networks:
+      - medilabo-net
+
+  gateway:
+    build: ./gateway
+    container_name: medilabo-gateway
+    ports:
+      - "8081:8081"
+    environment:
+      PATIENT_SERVICE_URL: http://patient:8080
+      NOTE_SERVICE_URL: http://note:8082
+      ASSESSMENT_SERVICE_URL: http://assessment:8083
+    depends_on:
+      - patient
+      - note
+      - assessment
+    networks:
+      - medilabo-net
+
+  # ============== FRONT ==============
+
+  front:
+    build: ./front
+    container_name: medilabo-front
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway
+    networks:
+      - medilabo-net
+
+# ============== VOLUMES & RÉSEAU ==============
+
+volumes:
+  mysql-data:
+  mongodb-data:
+
+networks:
+  medilabo-net:
+    driver: bridge
