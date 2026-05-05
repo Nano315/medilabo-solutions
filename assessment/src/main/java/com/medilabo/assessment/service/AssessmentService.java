@@ -60,34 +60,50 @@ public class AssessmentService {
 
     private String calculateRisk(int age, String genre, int triggerCount) {
         if (age > 30) {
-            if (triggerCount >= 8) {
-                return "Early onset";
-            } else if (triggerCount == 6 || triggerCount == 7) {
-                return "In Danger";
-            } else if (triggerCount >= 2 && triggerCount <= 5) {
-                return "Borderline";
-            } else {
-                return "None";
-            }
-        } else {
-            // age <= 30
-            if ("M".equalsIgnoreCase(genre)) {
-                if (triggerCount >= 5) {
-                    return "Early onset";
-                } else if (triggerCount >= 3) {
-                    return "In Danger";
-                } else {
-                    return "None";
-                }
-            } else if ("F".equalsIgnoreCase(genre)) {
-                if (triggerCount >= 7) {
-                    return "Early onset";
-                } else if (triggerCount >= 4) {
-                    return "In Danger";
-                } else {
-                    return "None";
-                }
-            }
+            return calculateRiskOver30(triggerCount);
+        }
+        return calculateRiskUnder30(genre, triggerCount);
+    }
+
+    private String calculateRiskOver30(int triggerCount) {
+        if (triggerCount >= 8) {
+            return "Early onset";
+        }
+        if (triggerCount >= 6) {
+            return "In Danger";
+        }
+        if (triggerCount >= 2) {
+            return "Borderline";
+        }
+        return "None";
+    }
+
+    private String calculateRiskUnder30(String genre, int triggerCount) {
+        if ("M".equalsIgnoreCase(genre)) {
+            return calculateRiskYoungMale(triggerCount);
+        }
+        if ("F".equalsIgnoreCase(genre)) {
+            return calculateRiskYoungFemale(triggerCount);
+        }
+        return "None";
+    }
+
+    private String calculateRiskYoungMale(int triggerCount) {
+        if (triggerCount >= 5) {
+            return "Early onset";
+        }
+        if (triggerCount >= 3) {
+            return "In Danger";
+        }
+        return "None";
+    }
+
+    private String calculateRiskYoungFemale(int triggerCount) {
+        if (triggerCount >= 7) {
+            return "Early onset";
+        }
+        if (triggerCount >= 4) {
+            return "In Danger";
         }
         return "None";
     }
